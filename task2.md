@@ -8,6 +8,8 @@
 export PATH=$PATH:/opt/cni/bin:kubebuilder/bin
 sudo PATH=$PATH:/opt/cni/bin:/usr/sbin /opt/cni/bin/containerd -c /etc/containerd/config.toml &
 
+HOST_IP=$(hostname -I | awk '{print $1}')
+
 $ sudo PATH=$PATH:/opt/cni/bin:/usr/sbin kubebuilder/bin/kubelet \
     --kubeconfig=/var/lib/kubelet/kubeconfig \
     --config=/var/lib/kubelet/config.yaml \
@@ -125,6 +127,21 @@ kube-system   kube-scheduler-codespaces-4a7786            1/1     Running   0   
 - побудуйте flame graph (perf script -i /tmp/out | FlameGraph/stackcollapse-perf.pl | FlameGraph/flamegraph.pl > flame.svg)
 - скопіюйте flame.svg з контейнера та збережіть у вашому репо
 
+```
+$ sudo kubebuilder/bin/kubectl apply -f debug-perf.yaml
+pod/debug-perf created
+
+$ sudo kubebuilder/bin/kubectl exec -it debug-pod -- sh
+/ # echo -1 > /proc/sys/kernel/perf_event_paranoid
+/ # echo 0  > /proc/sys/kernel/kptr_restrict
+/ # echo 65535 > /proc/sys/kernel/perf_event_max_stack 2>/dev/null || true
+/ # PID="$(pidof kube-apiserver || pgrep -x kube-apiserver)"
+/ # echo "kube-apiserver PID=$PID"
+kube-apiserver PID=3168
+
+perf record -F 99 -g --call-graph dwarf -p "$PID" -- sleep 60
+
+```
  
 ### 3. Мах. 
 - розгорніть CCM (Cloud Controller Manager) для свого улюбленого провайдера

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: debug-pod
+spec:
+  hostPID: true
+  hostNetwork: true
+  containers:
+  - name: debugger
+    image: verizondigital/kubectl-flame:v0.2.4-perf
+    securityContext:
+      privileged: true
+      capabilities:
+        add: ["SYS_ADMIN","SYS_PTRACE"]
+    command: ["sleep", "3600"]
