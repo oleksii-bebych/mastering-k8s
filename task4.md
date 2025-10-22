@@ -36,6 +36,19 @@ Welcome to kbot server!
 Version: v2.2.5-452a7af-amd64
 
 
+$ kubectl get HelmRelease -A
+NAMESPACE     NAME       AGE   READY   STATUS
+flux-system   app-kbot   21h   True    Helm install succeeded for release default/app-kbot.v1 with chart kbot@2.2.6+b55770efcc85
+
+
+$ kubectl get OCIRepository -A
+NAMESPACE     NAME       URL                                      READY   STATUS                                                                                                       AGE
+flux-system   app-kbot   oci://ghcr.io/den-vasyliev/charts/kbot   True    stored artifact for digest '2.2.6@sha256:b55770efcc855a2bfd19ee94d7e85619f7d9e5dfb0aba3fcb004c0a6d78b853b'   21h
+
+
+$ kubectl get po 
+NAME                        READY   STATUS    RESTARTS        AGE
+app-kbot-59b56f7994-7xwrn   1/1     Running   1 (8m41s ago)   21h
 ```
 
 ### На досвіді: 
